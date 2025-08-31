@@ -1,8 +1,8 @@
-package com.hs.auth.oauth2.common;
+package com.hs.auth.authenticate.oauth2.common;
 
+import com.hs.auth.authenticate.oauth2.dto.OAuth2TokenResponse;
+import com.hs.auth.authenticate.oauth2.dto.OAuth2UserInfoResponse;
 import com.hs.auth.common.OAuth2Provider;
-import com.hs.auth.oauth2.dto.OAuth2TokenResponse;
-import com.hs.auth.oauth2.dto.OAuth2UserInfoResponse;
 
 public interface OAuth2Client {
     OAuth2TokenResponse exchangeCodeForToken(String authorizationCode);

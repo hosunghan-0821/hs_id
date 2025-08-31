@@ -1,4 +1,4 @@
-package com.hs.auth.oauth2.service;
+package com.hs.auth.authenticate.oauth2.service;
 
 import com.hs.auth.common.OAuth2Provider;
 import org.springframework.stereotype.Service;

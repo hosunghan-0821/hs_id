@@ -1,13 +1,12 @@
-package com.hs.auth.jwt.application;
+package com.hs.auth.authentication.jwt.application;
 
-import com.hs.auth.jwt.application.dto.GenerateTokenCommand;
-import com.hs.auth.jwt.domain.JwtToken;
-import com.hs.auth.jwt.domain.JwtTokenGenerator;
-import com.hs.auth.jwt.domain.JwtTokenPair;
-import com.hs.auth.jwt.domain.RefreshTokenRepository;
+import com.hs.auth.authentication.jwt.application.dto.GenerateTokenCommand;
+import com.hs.auth.authentication.jwt.domain.JwtToken;
+import com.hs.auth.authentication.jwt.domain.JwtTokenGenerator;
+import com.hs.auth.authentication.jwt.domain.JwtTokenPair;
+import com.hs.auth.authentication.jwt.domain.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GenerateTokenUseCase {

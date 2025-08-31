@@ -1,4 +1,4 @@
-package com.hs.auth.oauth2.dto;
+package com.hs.auth.authenticate.oauth2.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

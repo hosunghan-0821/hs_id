@@ -1,7 +1,7 @@
-package com.hs.auth.oauth2.factory;
+package com.hs.auth.authenticate.oauth2.factory;
 
-import com.hs.auth.oauth2.client.KakaoOAuth2Client;
-import com.hs.auth.oauth2.common.OAuth2Client;
+import com.hs.auth.authenticate.oauth2.client.KakaoOAuth2Client;
+import com.hs.auth.authenticate.oauth2.common.OAuth2Client;
 import com.hs.auth.common.OAuth2Provider;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.hs.auth.jwt.domain;
+package com.hs.auth.authentication.jwt.domain;
 
 import com.hs.auth.user.domain.User;
 import io.jsonwebtoken.Jwts;

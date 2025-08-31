@@ -1,6 +1,6 @@
-package com.hs.auth.jwt.persistence;
+package com.hs.auth.authenticate.jwt.persistence;
 
-import com.hs.auth.jwt.domain.RefreshTokenRepository;
+import com.hs.auth.authentication.jwt.domain.RefreshTokenRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 

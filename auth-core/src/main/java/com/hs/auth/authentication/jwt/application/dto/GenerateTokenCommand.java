@@ -1,4 +1,4 @@
-package com.hs.auth.jwt.application.dto;
+package com.hs.auth.authentication.jwt.application.dto;
 
 import com.hs.auth.user.domain.User;
 

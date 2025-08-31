@@ -1,11 +1,11 @@
-package com.hs.auth.oauth2.client;
+package com.hs.auth.authenticate.oauth2.client;
 
+import com.hs.auth.authenticate.oauth2.common.OAuth2Client;
+import com.hs.auth.authenticate.oauth2.dto.KakaoTokenResponse;
+import com.hs.auth.authenticate.oauth2.dto.KakaoUserInfoResponse;
+import com.hs.auth.authenticate.oauth2.dto.OAuth2TokenResponse;
+import com.hs.auth.authenticate.oauth2.dto.OAuth2UserInfoResponse;
 import com.hs.auth.common.OAuth2Provider;
-import com.hs.auth.oauth2.common.OAuth2Client;
-import com.hs.auth.oauth2.dto.KakaoTokenResponse;
-import com.hs.auth.oauth2.dto.KakaoUserInfoResponse;
-import com.hs.auth.oauth2.dto.OAuth2TokenResponse;
-import com.hs.auth.oauth2.dto.OAuth2UserInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
