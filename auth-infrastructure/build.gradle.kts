@@ -3,13 +3,16 @@
 dependencies {
     // Core 모듈 의존성 (Domain 클래스들을 사용하기 위해)
     implementation(project(":auth-core"))
-    
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     // Spring Data JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("mysql:mysql-connector-java:8.0.33")
+
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
@@ -18,10 +21,11 @@ dependencies {
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // Spring Security
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    api("org.springframework.boot:spring-boot-starter-security")
 
-    // OAuth 2.0 클라이언트(소셜 로그인)
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // HTTP Client for OAuth2 external API calls
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
 }
 
 tasks.test {

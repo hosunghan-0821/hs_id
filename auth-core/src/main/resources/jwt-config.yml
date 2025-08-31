@@ -1,0 +1,6 @@
+jwt:
+  secret: "myJwtSecretKey1234567890123456789012345678901234567890abcdef"
+  access-token:
+    validity-seconds: 3600  # 1시간
+  refresh-token:
+    validity-seconds: 604800  # 7일
