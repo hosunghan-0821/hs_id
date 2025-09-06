@@ -1,6 +1,10 @@
-package com.hs.auth.user.domain;
+package com.hs.auth.user.domain.port;
 
 import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.user.domain.ServiceUser;
+import com.hs.auth.user.domain.ServiceUserId;
+import com.hs.auth.user.domain.User;
+import com.hs.auth.user.domain.UserId;
 
 import java.util.List;
 import java.util.Optional;

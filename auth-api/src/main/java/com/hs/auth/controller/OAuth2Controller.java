@@ -24,6 +24,7 @@ public class OAuth2Controller implements OAuth2Api {
     }
     
     @Override
+    @Deprecated
     public ApiResponse<OAuth2CallbackResponse> handleAuthorizationCallback(
             @RequestParam("code") String authorizationCode,
             @RequestParam(value = "state", required = false) String state) {

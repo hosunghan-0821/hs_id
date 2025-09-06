@@ -3,7 +3,7 @@ package com.hs.auth.user.application;
 import com.hs.auth.user.application.dto.AuthenticateUserCommand;
 import com.hs.auth.user.domain.User;
 import com.hs.auth.user.domain.UserId;
-import com.hs.auth.user.domain.UserRepository;
+import com.hs.auth.user.domain.port.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

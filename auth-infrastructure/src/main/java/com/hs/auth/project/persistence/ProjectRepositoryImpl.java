@@ -2,7 +2,7 @@ package com.hs.auth.project.persistence;
 
 import com.hs.auth.project.domain.Project;
 import com.hs.auth.project.domain.ProjectId;
-import com.hs.auth.project.domain.ProjectRepository;
+import com.hs.auth.project.domain.port.ProjectRepository;
 import com.hs.auth.project.domain.ProjectStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;

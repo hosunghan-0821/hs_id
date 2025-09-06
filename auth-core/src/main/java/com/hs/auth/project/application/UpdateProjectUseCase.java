@@ -2,7 +2,7 @@ package com.hs.auth.project.application;
 
 import com.hs.auth.project.application.dto.UpdateProjectCommand;
 import com.hs.auth.project.domain.Project;
-import com.hs.auth.project.domain.ProjectRepository;
+import com.hs.auth.project.domain.port.ProjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
