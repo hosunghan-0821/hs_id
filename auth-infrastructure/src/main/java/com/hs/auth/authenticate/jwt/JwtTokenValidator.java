@@ -31,38 +31,38 @@ public class JwtTokenValidator implements TokenValidator {
     @Override
     public boolean isValid(String token) {
         try {
+            String cleanToken = cleanToken(token);
             Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(token);
+                    .parseSignedClaims(cleanToken);
             return true;
         } catch (JwtException e) {
-            return false;
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @Override
     public boolean isExpired(String token) {
         try {
-            Claims claims = extractClaims(token);
+            String cleanToken = cleanToken(token);
+            Claims claims = extractClaims(cleanToken);
             ZonedDateTime expirationTime = TimeUtils.fromDate(claims.getExpiration());
             ZonedDateTime currentTime = TimeUtils.nowUtc();
             return expirationTime.isBefore(currentTime);
-        } catch (ExpiredJwtException e) {
-            return true;
         } catch (JwtException e) {
-            return true;
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @Override
     public User extractUser(String token) {
         Claims claims = extractClaims(token);
-        
+
         String userId = claims.getSubject();
         String email = claims.get(JwtClaimType.EMAIL.getClaimName(), String.class);
         String provider = claims.get(JwtClaimType.PROVIDER.getClaimName(), String.class);
-        
+
         return new User(
                 UserId.of(userId),
                 email,
@@ -73,12 +73,14 @@ public class JwtTokenValidator implements TokenValidator {
 
     @Override
     public String extractSubject(String token) {
-        return extractClaims(token).getSubject();
+        String cleanToken = cleanToken(token);
+        return extractClaims(cleanToken).getSubject();
     }
 
     @Override
     public String extractServiceName(String token) {
-        return extractClaims(token).get(JwtClaimType.SERVICE_NAME.getClaimName(), String.class);
+        String cleanToken = cleanToken(token);
+        return extractClaims(cleanToken).get(JwtClaimType.SERVICE_NAME.getClaimName(), String.class);
     }
 
     private Claims extractClaims(String token) {
@@ -91,5 +93,12 @@ public class JwtTokenValidator implements TokenValidator {
         } catch (JwtException e) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.", e);
         }
+    }
+
+    private String cleanToken(String authorization) {
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+        return authorization;
     }
 }

@@ -6,7 +6,7 @@ import com.hs.auth.api.dto.OAuth2AuthenticateRequest;
 import com.hs.auth.api.dto.OAuth2AuthenticateResponse;
 import com.hs.auth.api.dto.OAuth2CallbackResponse;
 import com.hs.auth.authenticate.oauth2.service.OAuth2StateService;
-import com.hs.auth.service.OAuth2AuthenticationService;
+import com.hs.auth.service.OAuth2FacadeService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class OAuth2Controller implements OAuth2Api {
     
     private final OAuth2StateService oauth2StateService;
-    private final OAuth2AuthenticationService oauth2AuthenticationService;
+    private final OAuth2FacadeService oauth2FacadeService;
     
-    public OAuth2Controller(OAuth2StateService oauth2StateService, OAuth2AuthenticationService oauth2AuthenticationService) {
+    public OAuth2Controller(OAuth2StateService oauth2StateService, OAuth2FacadeService oauth2FacadeService) {
         this.oauth2StateService = oauth2StateService;
-        this.oauth2AuthenticationService = oauth2AuthenticationService;
+        this.oauth2FacadeService = oauth2FacadeService;
     }
     
     @Override
@@ -46,7 +46,7 @@ public class OAuth2Controller implements OAuth2Api {
 
     @Override
     public ApiResponse<OAuth2AuthenticateResponse> authenticateWithOAuth2(OAuth2AuthenticateRequest request) {
-        OAuth2AuthenticateResponse response = oauth2AuthenticationService.authenticate(request);
+        OAuth2AuthenticateResponse response = oauth2FacadeService.authenticate(request);
         return ApiResponse.success("OAuth2 인증이 성공적으로 완료되었습니다.", response);
     }
 }

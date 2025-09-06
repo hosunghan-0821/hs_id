@@ -19,7 +19,7 @@ import com.hs.auth.user.domain.User;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OAuth2AuthenticationService {
+public class OAuth2FacadeService {
 
     private final OAuth2ClientFactory oauth2ClientFactory;
     private final OAuth2StateService oauth2StateService;
@@ -27,7 +27,7 @@ public class OAuth2AuthenticationService {
     private final GenerateTokenUseCase generateTokenUseCase;
     private final RegisterServiceUserUseCase registerServiceUserUseCase;
 
-    public OAuth2AuthenticationService(
+    public OAuth2FacadeService(
             OAuth2ClientFactory oauth2ClientFactory,
             OAuth2StateService oauth2StateService,
             AuthenticateUserUseCase authenticateUserUseCase,

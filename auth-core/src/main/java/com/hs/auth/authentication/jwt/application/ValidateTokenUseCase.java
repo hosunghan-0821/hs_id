@@ -22,22 +22,6 @@ public class ValidateTokenUseCase {
         return tokenValidator.isValid(cleanToken) && !tokenValidator.isExpired(cleanToken);
     }
 
-    public User extractUserFromToken(String token) {
-        if (token == null || token.trim().isEmpty()) {
-            throw new IllegalArgumentException("토큰이 없습니다.");
-        }
-        
-        String cleanToken = cleanToken(token);
-        if (!tokenValidator.isValid(cleanToken)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-        }
-        
-        if (tokenValidator.isExpired(cleanToken)) {
-            throw new IllegalArgumentException("만료된 토큰입니다.");
-        }
-        
-        return tokenValidator.extractUser(cleanToken);
-    }
 
     private String cleanToken(String token) {
         if (token.startsWith("Bearer ")) {

@@ -3,7 +3,10 @@ package com.hs.auth.controller;
 import com.hs.auth.api.AuthApi;
 import com.hs.auth.api.dto.ApiResponse;
 import com.hs.auth.authentication.jwt.application.ValidateTokenUseCase;
+import com.hs.auth.service.AuthFacadeService;
+import com.hs.auth.user.domain.ServiceUser;
 import com.hs.auth.user.domain.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,23 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController implements AuthApi {
 
     private final ValidateTokenUseCase validateTokenUseCase;
+    private final AuthFacadeService authFacadeService;
 
-    public AuthController(ValidateTokenUseCase validateTokenUseCase) {
+    public AuthController(ValidateTokenUseCase validateTokenUseCase,
+                          AuthFacadeService authFacadeService) {
         this.validateTokenUseCase = validateTokenUseCase;
+        this.authFacadeService = authFacadeService;
     }
 
     @Override
-    public ApiResponse<Void> validateToken(String accessToken) {
-        try {
-            boolean isValid = validateTokenUseCase.execute(accessToken);
-            if (isValid) {
-                return ApiResponse.success("토큰 검증이 완료되었습니다.", null);
-            } else {
-                return ApiResponse.error("유효하지 않은 토큰입니다.", null);
-            }
-        } catch (Exception e) {
-            return ApiResponse.error("토큰 검증 중 오류가 발생했습니다: " + e.getMessage(), null);
-        }
+    public ApiResponse<User> verifyToken(String accessToken, @AuthenticationPrincipal User user) {
+        authFacadeService.verifyToken(accessToken, user);
+        return ApiResponse.success("토큰 검증이 완료되었습니다.", user);
     }
 
     @Override
@@ -44,13 +42,8 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ApiResponse<Object> getUserInfo(String accessToken) {
-        try {
-            User user = validateTokenUseCase.extractUserFromToken(accessToken);
-            return ApiResponse.success("사용자 정보 조회가 완료되었습니다.", user);
-        } catch (Exception e) {
-            return ApiResponse.error("사용자 정보 조회 중 오류가 발생했습니다: " + e.getMessage(), null);
-        }
+    public ApiResponse<Object> getUserInfo(String accessToken, @AuthenticationPrincipal User user) {
+        return ApiResponse.success("사용자 정보 조회가 완료되었습니다.", authFacadeService.getUserInfo(accessToken, user));
     }
 
     @Override
