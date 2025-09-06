@@ -3,6 +3,11 @@
 dependencies {
     // Core 모듈 의존성 (Domain 클래스들을 사용하기 위해)
     implementation(project(":auth-core"))
+    
+    // JWT 라이브러리
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")

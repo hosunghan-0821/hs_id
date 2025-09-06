@@ -1,4 +1,4 @@
-package com.hs.auth.authentication.jwt.domain;
+package com.hs.auth.authentication.jwt.domain.port;
 
 public interface RefreshTokenRepository {
 

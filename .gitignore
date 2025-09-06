@@ -105,3 +105,10 @@ credentials/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+### Claude Code ###
+CLAUDE.md
+.claude/
+.claude-settings/
+claude-settings.json
+.claude-code/

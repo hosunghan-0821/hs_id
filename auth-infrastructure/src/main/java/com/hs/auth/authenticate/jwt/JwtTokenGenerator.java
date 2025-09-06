@@ -1,6 +1,11 @@
-package com.hs.auth.authentication.jwt.domain;
+package com.hs.auth.authenticate.jwt;
 
+import com.hs.auth.authentication.jwt.domain.JwtClaimType;
+import com.hs.auth.authentication.jwt.domain.JwtToken;
+import com.hs.auth.authentication.jwt.domain.port.TokenGenerator;
+import com.hs.auth.authentication.jwt.domain.TokenType;
 import com.hs.auth.user.domain.User;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
-public class JwtTokenGenerator {
+public class JwtTokenGenerator implements TokenGenerator {
 
     private final SecretKey secretKey;
     private final long accessTokenValidityInSeconds;
@@ -28,15 +33,16 @@ public class JwtTokenGenerator {
         this.refreshTokenValidityInSeconds = refreshTokenValidityInSeconds;
     }
 
+    @Override
     public JwtToken generateAccessToken(User user, String serviceName) {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime expiration = now.plusSeconds(accessTokenValidityInSeconds);
 
         String token = Jwts.builder()
                 .subject(user.getId().getValue())
-                .claim("email", user.getEmail())
-                .claim("provider", user.getProvider().getValue())
-                .claim("service_name", serviceName)
+                .claim(JwtClaimType.EMAIL.getClaimName(), user.getEmail())
+                .claim(JwtClaimType.PROVIDER.getClaimName(), user.getProvider().getValue())
+                .claim(JwtClaimType.SERVICE_NAME.getClaimName(), serviceName)
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiration.toInstant()))
                 .signWith(secretKey)
@@ -45,13 +51,14 @@ public class JwtTokenGenerator {
         return new JwtToken(token, TokenType.ACCESS, now, expiration);
     }
 
+    @Override
     public JwtToken generateRefreshToken(User user, String serviceName) {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime expiration = now.plusSeconds(refreshTokenValidityInSeconds);
 
         String token = Jwts.builder()
                 .subject(user.getId().getValue())
-                .claim("service_name", serviceName)
+                .claim(JwtClaimType.SERVICE_NAME.getClaimName(), serviceName)
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiration.toInstant()))
                 .signWith(secretKey)
