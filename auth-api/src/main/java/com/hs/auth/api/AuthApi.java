@@ -1,6 +1,8 @@
 package com.hs.auth.api;
 
 import com.hs.auth.api.dto.ApiResponse;
+import com.hs.auth.api.dto.RefreshTokenRequest;
+import com.hs.auth.api.dto.TokenResponse;
 import com.hs.auth.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -29,7 +32,7 @@ public interface AuthApi {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "유효하지 않은 Refresh Token")
     })
-    ApiResponse<String> refreshToken(@Parameter(hidden = true) @RequestHeader("Refresh-Token") String refreshToken);
+    ApiResponse<TokenResponse> refreshToken(@RequestBody RefreshTokenRequest request);
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "사용자를 로그아웃하고 토큰을 무효화합니다")

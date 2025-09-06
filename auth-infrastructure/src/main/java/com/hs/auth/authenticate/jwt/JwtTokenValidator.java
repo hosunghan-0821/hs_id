@@ -83,6 +83,12 @@ public class JwtTokenValidator implements TokenValidator {
         return extractClaims(cleanToken).get(JwtClaimType.SERVICE_NAME.getClaimName(), String.class);
     }
 
+    @Override
+    public String extractTokenId(String token) {
+        String cleanToken = cleanToken(token);
+        return extractClaims(cleanToken).get(JwtClaimType.TOKEN_ID.getClaimName(), String.class);
+    }
+
     private Claims extractClaims(String token) {
         try {
             return Jwts.parser()

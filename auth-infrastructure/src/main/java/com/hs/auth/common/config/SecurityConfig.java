@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,6 +41,12 @@ public class SecurityConfig {
 
                 // 세션 사용 안함 (JWT 사용)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                
+                // HTTP Basic 인증 비활성화
+                .httpBasic(AbstractHttpConfigurer::disable)
+                
+                // Form 로그인 비활성화
+                .formLogin(AbstractHttpConfigurer::disable)
 
                 //excpetion handling
                 .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler))
@@ -48,15 +56,15 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health", "/api/auth/health").permitAll()
 
-                        // 공개 API - 인증 불필요 (OAuth2 로그인 플로우)
+                        // 공개 API - 인증 불필요 (OAuth2 로그인 플로우, refresh token)
                         .requestMatchers("/api/auth/oauth2/callback").permitAll()
                         .requestMatchers("/api/auth/oauth2/authenticate").permitAll()
+                        .requestMatchers("/api/auth/refresh").permitAll()
 
                         // 다른 서비스용 토큰 검증 API
                         .requestMatchers("/api/auth/token/verify").authenticated()
 
                         // 보호된 API - 인증 필요
-                        .requestMatchers("/api/auth/refresh").authenticated()
                         .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/auth/revoke").authenticated()
@@ -71,6 +79,13 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            throw new UsernameNotFoundException("JWT 인증을 사용합니다");
+        };
     }
 
     @Bean

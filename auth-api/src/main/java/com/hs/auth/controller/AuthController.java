@@ -2,9 +2,10 @@ package com.hs.auth.controller;
 
 import com.hs.auth.api.AuthApi;
 import com.hs.auth.api.dto.ApiResponse;
-import com.hs.auth.authentication.jwt.application.ValidateTokenUseCase;
+import com.hs.auth.api.dto.RefreshTokenRequest;
+import com.hs.auth.api.dto.TokenResponse;
+import com.hs.auth.authentication.jwt.domain.JwtTokenPair;
 import com.hs.auth.service.AuthFacadeService;
-import com.hs.auth.user.domain.ServiceUser;
 import com.hs.auth.user.domain.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,12 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController implements AuthApi {
 
-    private final ValidateTokenUseCase validateTokenUseCase;
     private final AuthFacadeService authFacadeService;
 
-    public AuthController(ValidateTokenUseCase validateTokenUseCase,
-                          AuthFacadeService authFacadeService) {
-        this.validateTokenUseCase = validateTokenUseCase;
+    public AuthController(AuthFacadeService authFacadeService) {
         this.authFacadeService = authFacadeService;
     }
 
@@ -30,9 +28,13 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ApiResponse<String> refreshToken(String refreshToken) {
-        // TODO: 토큰 갱신 로직 구현
-        return ApiResponse.success("토큰이 갱신되었습니다.", "new-access-token");
+    public ApiResponse<TokenResponse> refreshToken(RefreshTokenRequest request) {
+        JwtTokenPair tokenPair = authFacadeService.refreshToken(request.getRefreshToken());
+        TokenResponse tokenResponse = new TokenResponse(
+                tokenPair.getAccessToken().getToken(),
+                tokenPair.getRefreshToken().getToken()
+        );
+        return ApiResponse.success("토큰이 갱신되었습니다.", tokenResponse);
     }
 
     @Override

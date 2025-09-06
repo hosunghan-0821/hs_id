@@ -2,10 +2,10 @@ package com.hs.auth.authentication.jwt.domain.port;
 
 public interface RefreshTokenRepository {
 
-    void save(String userId, String serviceName, String refreshToken, long ttlSeconds);
+    void save(String userId, String serviceName, String tokenId, String refreshToken, long ttlSeconds);
 
-    String findByUserIdAndServiceName(String userId, String serviceName);
+    String findByUserIdServiceNameAndTokenId(String userId, String serviceName, String tokenId);
 
-    void deleteByUserIdAndServiceName(String userId, String serviceName);
+    void deleteByUserIdServiceNameAndTokenId(String userId, String serviceName, String tokenId);
 
 }

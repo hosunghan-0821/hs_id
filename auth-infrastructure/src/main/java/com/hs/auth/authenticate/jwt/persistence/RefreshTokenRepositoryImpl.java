@@ -18,22 +18,22 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
-    public void save(String userId, String serviceName, String refreshToken, long ttlSeconds) {
-        String key = createKey(userId, serviceName);
+    public void save(String userId, String serviceName, String tokenId, String refreshToken, long ttlSeconds) {
+        String key = createKey(userId, serviceName, tokenId);
         redisTemplate.opsForValue().set(key, refreshToken, ttlSeconds, TimeUnit.SECONDS);
     }
 
     @Override
-    public String findByUserIdAndServiceName(String userId, String serviceName) {
-        return redisTemplate.opsForValue().get(createKey(userId, serviceName));
+    public String findByUserIdServiceNameAndTokenId(String userId, String serviceName, String tokenId) {
+        return redisTemplate.opsForValue().get(createKey(userId, serviceName, tokenId));
     }
 
     @Override
-    public void deleteByUserIdAndServiceName(String userId, String serviceName) {
-        redisTemplate.delete(createKey(userId, serviceName));
+    public void deleteByUserIdServiceNameAndTokenId(String userId, String serviceName, String tokenId) {
+        redisTemplate.delete(createKey(userId, serviceName, tokenId));
     }
 
-    private String createKey(String userId, String serviceName) {
-        return KEY_PREFIX + userId + ":" + serviceName;
+    private String createKey(String userId, String serviceName, String tokenId) {
+        return KEY_PREFIX + userId + ":" + serviceName + ":" + tokenId;
     }
 }

@@ -13,4 +13,6 @@ public interface TokenValidator {
     String extractSubject(String token);
     
     String extractServiceName(String token);
+    
+    String extractTokenId(String token);
 }

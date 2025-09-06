@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtTokenGenerator implements TokenGenerator {
@@ -40,8 +41,6 @@ public class JwtTokenGenerator implements TokenGenerator {
 
         String token = Jwts.builder()
                 .subject(user.getId().getValue())
-                .claim(JwtClaimType.EMAIL.getClaimName(), user.getEmail())
-                .claim(JwtClaimType.PROVIDER.getClaimName(), user.getProvider().getValue())
                 .claim(JwtClaimType.SERVICE_NAME.getClaimName(), serviceName)
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiration.toInstant()))
@@ -59,6 +58,7 @@ public class JwtTokenGenerator implements TokenGenerator {
         String token = Jwts.builder()
                 .subject(user.getId().getValue())
                 .claim(JwtClaimType.SERVICE_NAME.getClaimName(), serviceName)
+                .claim(JwtClaimType.TOKEN_ID.getClaimName(), UUID.randomUUID().toString())
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiration.toInstant()))
                 .signWith(secretKey)
