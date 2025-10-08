@@ -1,0 +1,53 @@
+@startuml Project Authentication Flow
+
+!theme plain
+title 프로젝트 인증 및 OAuth2 흐름
+
+actor "프로젝트 관리자" as Admin
+actor "사용자" as User
+participant "프로젝트 Front" as Front
+participant "프로젝트 Server" as Server
+participant "인증 Server" as Auth
+participant "OAuth Provider\n(Kakao/Google)" as OAuth
+
+== 0. 프로젝트 등록 (최초 1회) ==
+Admin -> Auth: POST /api/projects\nX-Admin-API-Key: xxx\n{name, description, redirectUri}
+note right: Admin API Key로 인증
+Auth --> Admin: 200 OK\n{clientId, clientSecret, redirectUri}
+note right: Client Secret은 1회만 제공\nBCrypt로 암호화하여 저장
+
+== 1. 로그인 URL 요청 ==
+User -> Front: 로그인 버튼 클릭
+Front -> Server: 로그인 URL 요청
+Server -> Auth: GET /api/auth/oauth2/authorize-url\n?service_name=shop&provider=KAKAO\nX-Client-Id: xxx\nX-Client-Secret: xxx
+note right: ProjectClientAuthFilter:\nClient 인증 검증
+Auth -> Auth: - Project 조회 (name)\n- State 생성 (provider_serviceName)\n- Kakao URL 생성
+Auth --> Server: 200 OK\n{authorizeUrl}
+Server --> Front: 200 OK\n{authorizeUrl}
+
+== 2. OAuth 로그인 ==
+Front -> OAuth: Redirect to authorizeUrl
+OAuth -> User: 로그인 화면 표시
+User -> OAuth: 로그인 정보 입력
+OAuth -> Front: Redirect to redirectUri\n(프로젝트 콜백 URL)\n?code=xxx&state=yyy
+
+== 3. JWT 토큰 발급 ==
+Front -> Server: Authorization code 전달\ncode, state
+Server -> Auth: POST /api/auth/oauth2/authenticate\nX-Client-Id: xxx\nX-Client-Secret: xxx\n{authorizationCode, state}
+note right: ProjectClientAuthFilter:\nClient 인증 검증
+Auth -> OAuth: 토큰 교환 및 사용자 정보 조회
+OAuth --> Auth: 사용자 정보
+Auth -> Auth: - User 생성/조회\n- ServiceUser 등록/확인\n- JWT 토큰 발급
+Auth --> Server: 200 OK\n{accessToken, refreshToken, user}
+Server --> Front: 200 OK\n{accessToken, refreshToken, user}
+note right: 토큰을 안전하게 저장
+
+== 4. 보호된 리소스 접근 ==
+User -> Front: API 요청
+Front -> Server: GET /api/products\nAuthorization: Bearer {accessToken}
+Server -> Auth: POST /api/auth/token/verify\nX-Client-Id: xxx\nX-Client-Secret: xxx\nAuthorization: Bearer {JWT}
+note right: ProjectClientAuthFilter +\nJwtAuthenticationFilter:\n두 인증 모두 통과 필요
+Auth --> Server: 200 OK\n{valid: true, user: {...}}
+Server --> Front: 200 OK\n{products}
+
+@enduml
