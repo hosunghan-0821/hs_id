@@ -45,6 +45,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public Optional<Project> findByName(String name) {
+        return jpaRepository.findByName(name)
+                .map(ProjectEntity::toDomain);
+    }
+
+    @Override
     public List<Project> findAll() {
         return jpaRepository.findAll()
                 .stream()

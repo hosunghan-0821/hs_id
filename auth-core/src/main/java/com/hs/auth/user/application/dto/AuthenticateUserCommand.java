@@ -1,6 +1,6 @@
 package com.hs.auth.user.application.dto;
 
-import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 
 public class AuthenticateUserCommand {
     private final String email;

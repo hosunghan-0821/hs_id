@@ -1,6 +1,6 @@
 package com.hs.auth.user.domain;
 
-import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;

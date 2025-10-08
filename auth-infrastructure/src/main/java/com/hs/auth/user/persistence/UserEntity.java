@@ -1,6 +1,6 @@
 package com.hs.auth.user.persistence;
 
-import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import com.hs.auth.user.domain.User;
 import com.hs.auth.user.domain.UserId;
 import jakarta.persistence.*;

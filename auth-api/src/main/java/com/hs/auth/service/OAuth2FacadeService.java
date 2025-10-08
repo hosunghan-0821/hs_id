@@ -2,6 +2,7 @@ package com.hs.auth.service;
 
 import com.hs.auth.api.dto.OAuth2AuthenticateRequest;
 import com.hs.auth.api.dto.OAuth2AuthenticateResponse;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import com.hs.auth.common.exception.OAuth2Exception;
 import com.hs.auth.authentication.jwt.application.GenerateTokenUseCase;
 import com.hs.auth.authentication.jwt.application.dto.GenerateTokenCommand;
@@ -11,11 +12,14 @@ import com.hs.auth.authenticate.oauth2.dto.OAuth2TokenResponse;
 import com.hs.auth.authenticate.oauth2.dto.OAuth2UserInfoResponse;
 import com.hs.auth.authenticate.oauth2.factory.OAuth2ClientFactory;
 import com.hs.auth.authenticate.oauth2.service.OAuth2StateService;
+import com.hs.auth.project.application.ProjectQueryService;
+import com.hs.auth.project.domain.Project;
 import com.hs.auth.user.application.AuthenticateUserUseCase;
 import com.hs.auth.user.application.RegisterServiceUserUseCase;
 import com.hs.auth.user.application.dto.AuthenticateUserCommand;
 import com.hs.auth.user.application.dto.RegisterServiceUserCommand;
 import com.hs.auth.user.domain.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,19 +30,22 @@ public class OAuth2FacadeService {
     private final AuthenticateUserUseCase authenticateUserUseCase;
     private final GenerateTokenUseCase generateTokenUseCase;
     private final RegisterServiceUserUseCase registerServiceUserUseCase;
+    private final ProjectQueryService projectQueryService;
 
     public OAuth2FacadeService(
             OAuth2ClientFactory oauth2ClientFactory,
             OAuth2StateService oauth2StateService,
             AuthenticateUserUseCase authenticateUserUseCase,
             GenerateTokenUseCase generateTokenUseCase,
-            RegisterServiceUserUseCase registerServiceUserUseCase
+            RegisterServiceUserUseCase registerServiceUserUseCase,
+            ProjectQueryService projectQueryService
     ) {
         this.oauth2ClientFactory = oauth2ClientFactory;
         this.oauth2StateService = oauth2StateService;
         this.authenticateUserUseCase = authenticateUserUseCase;
         this.generateTokenUseCase = generateTokenUseCase;
         this.registerServiceUserUseCase = registerServiceUserUseCase;
+        this.projectQueryService = projectQueryService;
     }
 
     public OAuth2AuthenticateResponse authenticate(OAuth2AuthenticateRequest request) {
@@ -98,5 +105,17 @@ public class OAuth2FacadeService {
                 tokenPair.getAccessToken().getToken(),
                 tokenPair.getRefreshToken().getToken()
         );
+    }
+
+    public String getAuthorizeUrl(String serviceName, OAuth2Provider provider) {
+        // 1. 서비스명으로 프로젝트 조회
+        Project project = projectQueryService.getProjectByName(serviceName);
+
+        // 2. State 생성 (serviceName + provider 정보 포함)
+        String state = oauth2StateService.generateState(provider, serviceName);
+
+        // 3. OAuth2Client로 authorize URL 생성
+        OAuth2Client oauth2Client = oauth2ClientFactory.getClient(provider);
+        return oauth2Client.getAuthorizeUrl(project.getRedirectUri(), state);
     }
 }

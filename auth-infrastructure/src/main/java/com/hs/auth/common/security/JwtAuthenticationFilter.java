@@ -100,13 +100,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        // 인증이 필요없는 경로들
-        return path.startsWith("/api/auth/oauth2") ||
-                path.startsWith("/swagger") ||
-                path.startsWith("/v3/api-docs") ||
-                path.equals("/health") ||
-                path.equals("/actuator/health") ||
-                path.equals("/api/auth/health");
+
+        // JWT 인증이 필요한 경로만 필터링
+        boolean needsJwtAuth =
+                path.equals("/api/auth/me") ||
+                path.equals("/api/auth/logout") ||
+                path.equals("/api/auth/revoke") ||
+                path.equals("/api/auth/token/verify");
+
+        // 필요한 경로가 아니면 필터를 건너뜀 (shouldNotFilter = true)
+        return !needsJwtAuth;
     }
 
     private void setErrorResponse(HttpServletResponse response, int status, String message) throws IOException {

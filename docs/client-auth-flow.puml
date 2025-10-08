@@ -1,0 +1,46 @@
+@startuml Client Authentication Flow
+
+!theme plain
+title JWT Authentication Flow for Client
+
+actor User
+participant Client
+participant "OAuth Provider\n(Google/Kakao/Naver)" as OAuth
+participant "Auth API" as Auth
+participant "Protected API" as API
+
+== 1. OAuth Login ==
+User -> Client: Click login button
+Client -> OAuth: Redirect to OAuth login\n(e.g., Google OAuth URL)
+OAuth -> User: Show login form
+User -> OAuth: Enter credentials
+OAuth -> Client: Redirect with authorization code\n(callback URL)
+
+Client -> Auth: POST /api/auth/oauth2/authenticate\nAuthorization: Bearer {authorizationCode}
+note right: Include provider info (google/kakao/naver)
+Auth -> OAuth: Verify authorization code
+OAuth --> Auth: User info
+Auth --> Client: 200 OK\n{accessToken, refreshToken}
+note right: Store both tokens securely
+
+== 2. API Calls ==
+Client -> API: GET /api/resource\nAuthorization: Bearer {accessToken}
+API --> Client: 200 OK\n{resource data}
+
+== 3. Token Refresh (when access token expires) ==
+Client -> API: GET /api/resource\nAuthorization: Bearer {expiredToken}
+API --> Client: 401 Unauthorized
+
+Client -> Auth: POST /api/auth/refresh\n{refreshToken}
+Auth --> Client: 200 OK\n{newAccessToken, newRefreshToken}
+note right: Replace old tokens with new ones
+
+Client -> API: GET /api/resource\nAuthorization: Bearer {newAccessToken}
+API --> Client: 200 OK\n{resource data}
+
+== 4. Logout ==
+Client -> Auth: POST /api/auth/logout
+Auth --> Client: 200 OK
+note right: Clear stored tokens
+
+@enduml

@@ -3,7 +3,9 @@ package com.hs.auth.api;
 import com.hs.auth.api.dto.ApiResponse;
 import com.hs.auth.api.dto.OAuth2AuthenticateRequest;
 import com.hs.auth.api.dto.OAuth2AuthenticateResponse;
+import com.hs.auth.api.dto.OAuth2AuthorizeUrlResponse;
 import com.hs.auth.api.dto.OAuth2CallbackResponse;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +26,18 @@ public interface OAuth2Api {
     ApiResponse<OAuth2CallbackResponse> handleAuthorizationCallback(
             @RequestParam("code") String authorizationCode,
             @RequestParam(value = "state", required = false) String state
+    );
+
+    @GetMapping("/authorize-url")
+    @Operation(summary = "OAuth2 인증 URL 생성", description = "서비스명과 Provider로 OAuth2 인증 URL을 생성합니다")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "인증 URL 생성 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "서비스를 찾을 수 없음")
+    })
+    ApiResponse<OAuth2AuthorizeUrlResponse> getAuthorizeUrl(
+            @RequestParam("service_name") String serviceName,
+            @RequestParam("provider") OAuth2Provider provider
     );
 
     @PostMapping("/authenticate")

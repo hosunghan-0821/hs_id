@@ -2,7 +2,7 @@ package com.hs.auth.authenticate.jwt;
 
 import com.hs.auth.authentication.jwt.domain.JwtClaimType;
 import com.hs.auth.authentication.jwt.domain.port.TokenValidator;
-import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import com.hs.auth.common.util.TimeUtils;
 import com.hs.auth.user.domain.User;
 import com.hs.auth.user.domain.UserId;

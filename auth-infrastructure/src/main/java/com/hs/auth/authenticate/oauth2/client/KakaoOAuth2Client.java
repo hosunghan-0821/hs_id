@@ -5,7 +5,7 @@ import com.hs.auth.authenticate.oauth2.dto.KakaoTokenResponse;
 import com.hs.auth.authenticate.oauth2.dto.KakaoUserInfoResponse;
 import com.hs.auth.authenticate.oauth2.dto.OAuth2TokenResponse;
 import com.hs.auth.authenticate.oauth2.dto.OAuth2UserInfoResponse;
-import com.hs.auth.common.OAuth2Provider;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -27,13 +27,23 @@ public class KakaoOAuth2Client implements OAuth2Client {
     @Value("${oauth2.kakao.redirect-uri}")
     private String redirectUri;
     
+    private static final String AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
     private static final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
-    
+
     public KakaoOAuth2Client(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-    
+
+    @Override
+    public String getAuthorizeUrl(String redirectUri, String state) {
+        return AUTHORIZE_URL +
+            "?response_type=code" +
+            "&client_id=" + clientId +
+            "&redirect_uri=" + redirectUri +
+            "&state=" + state;
+    }
+
     @Override
     public OAuth2TokenResponse exchangeCodeForToken(String authorizationCode) {
         HttpHeaders headers = new HttpHeaders();

@@ -46,4 +46,9 @@ public class ProjectQueryService {
     public boolean existsByClientId(String clientId) {
         return projectRepository.existsByClientId(clientId);
     }
+
+    public Project getProjectByName(String name) {
+        return projectRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다: " + name));
+    }
 }

@@ -13,7 +13,9 @@ public interface ProjectRepository {
     Optional<Project> findById(ProjectId id);
     
     Optional<Project> findByClientId(String clientId);
-    
+
+    Optional<Project> findByName(String name);
+
     List<Project> findAll();
     
     List<Project> findByStatus(ProjectStatus status);

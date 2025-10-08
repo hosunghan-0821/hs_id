@@ -4,8 +4,10 @@ import com.hs.auth.api.OAuth2Api;
 import com.hs.auth.api.dto.ApiResponse;
 import com.hs.auth.api.dto.OAuth2AuthenticateRequest;
 import com.hs.auth.api.dto.OAuth2AuthenticateResponse;
+import com.hs.auth.api.dto.OAuth2AuthorizeUrlResponse;
 import com.hs.auth.api.dto.OAuth2CallbackResponse;
 import com.hs.auth.authenticate.oauth2.service.OAuth2StateService;
+import com.hs.auth.authentication.oauth2.domain.OAuth2Provider;
 import com.hs.auth.service.OAuth2FacadeService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +44,13 @@ public class OAuth2Controller implements OAuth2Api {
         );
         
         return ApiResponse.success("인가 코드를 성공적으로 받았습니다.", callbackResponse);
+    }
+
+    @Override
+    public ApiResponse<OAuth2AuthorizeUrlResponse> getAuthorizeUrl(String serviceName, OAuth2Provider provider) {
+        String authorizeUrl = oauth2FacadeService.getAuthorizeUrl(serviceName, provider);
+        OAuth2AuthorizeUrlResponse response = new OAuth2AuthorizeUrlResponse(authorizeUrl);
+        return ApiResponse.success("인증 URL이 생성되었습니다.", response);
     }
 
     @Override

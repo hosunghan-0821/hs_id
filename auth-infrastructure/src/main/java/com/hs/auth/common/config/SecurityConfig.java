@@ -1,7 +1,9 @@
 package com.hs.auth.common.config;
 
+import com.hs.auth.common.security.AdminAuthFilter;
 import com.hs.auth.common.security.CustomAccessDeniedHandler;
 import com.hs.auth.common.security.JwtAuthenticationFilter;
+import com.hs.auth.common.security.ProjectClientAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,11 +24,18 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final ProjectClientAuthFilter projectClientAuthFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AdminAuthFilter adminAuthFilter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomAccessDeniedHandler customAccessDeniedHandler) {
+    public SecurityConfig(ProjectClientAuthFilter projectClientAuthFilter,
+                          JwtAuthenticationFilter jwtAuthenticationFilter,
+                          AdminAuthFilter adminAuthFilter,
+                          CustomAccessDeniedHandler customAccessDeniedHandler) {
+        this.projectClientAuthFilter = projectClientAuthFilter;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.adminAuthFilter = adminAuthFilter;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
@@ -75,8 +84,10 @@ public class SecurityConfig {
 
                 )
 
-                // JWT 필터 추가
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // 필터 체인 추가 (순서: ProjectClient → JWT → Admin)
+                .addFilterBefore(projectClientAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, ProjectClientAuthFilter.class)
+                .addFilterAfter(adminAuthFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

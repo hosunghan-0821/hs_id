@@ -24,9 +24,14 @@ public class RegisterProjectUseCase {
             throw new IllegalArgumentException("Project with name '" + command.getName() + "' already exists");
         }
 
-        Project project = new Project(command.getName(), command.getDescription(), command.getRedirectUri());
-        Project savedProject = projectRepository.save(project);
+        Project project = new Project(
+            command.getName(),
+            command.getDescription(),
+            command.getClientId(),
+            command.getEncodedClientSecret(),
+            command.getRedirectUri()
+        );
 
-        return savedProject;
+        return projectRepository.save(project);
     }
 }

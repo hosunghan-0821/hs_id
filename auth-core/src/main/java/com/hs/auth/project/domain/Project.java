@@ -15,14 +15,14 @@ public class Project {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public Project(String name, String description, String redirectUri) {
+    public Project(String name, String description, String clientId, String encodedClientSecret, String redirectUri) {
         this.id = ProjectId.generate();
         this.name = validateName(name);
         this.description = description;
-        this.clientId = generateClientId();
-        this.clientSecret = generateClientSecret();
+        this.clientId = clientId;
+        this.clientSecret = encodedClientSecret; // 이미 암호화된 secret
         this.redirectUri = validateRedirectUri(redirectUri);
-        this.status = ProjectStatus.INACTIVE;
+        this.status = ProjectStatus.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -72,12 +72,6 @@ public class Project {
                           this.createdAt, LocalDateTime.now());
     }
 
-    public Project regenerateClientSecret() {
-        return new Project(this.id, this.name, this.description, this.clientId, 
-                          generateClientSecret(), this.redirectUri, this.status,
-                          this.createdAt, LocalDateTime.now());
-    }
-
     private String validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Project name cannot be null or empty");
@@ -98,12 +92,12 @@ public class Project {
         return redirectUri.trim();
     }
 
-    private String generateClientId() {
-        return "client_" + System.currentTimeMillis();
+    public static String generateClientId() {
+        return UUID.randomUUID().toString();
     }
 
-    private String generateClientSecret() {
-        return "secret_" + UUID.randomUUID().toString().replace("-", "");
+    public static String generatePlainClientSecret() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     public ProjectId getId() {

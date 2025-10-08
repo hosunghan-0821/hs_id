@@ -22,13 +22,35 @@ public class SwaggerConfig {
                         .contact(new Contact()
                                 .name("HS Team")
                                 .email("winsomed96@naver.com")))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .addSecurityItem(new SecurityRequirement()
+                        .addList("bearerAuth")
+                        .addList("clientId")
+                        .addList("clientSecret")
+                        .addList("adminApiKey"))
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth", 
+                        .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")
-                                        .description("JWT Bearer Token")));
+                                        .description("JWT Bearer Token"))
+                        .addSecuritySchemes("clientId",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("X-Client-Id")
+                                        .description("Project Client ID"))
+                        .addSecuritySchemes("clientSecret",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("X-Client-Secret")
+                                        .description("Project Client Secret"))
+                        .addSecuritySchemes("adminApiKey",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("X-Admin-API-Key")
+                                        .description("Admin API Key")));
     }
 }

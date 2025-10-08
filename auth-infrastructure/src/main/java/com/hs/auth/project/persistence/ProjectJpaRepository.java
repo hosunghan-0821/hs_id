@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface ProjectJpaRepository extends JpaRepository<ProjectEntity, String> {
     
     Optional<ProjectEntity> findByClientId(String clientId);
-    
+
+    Optional<ProjectEntity> findByName(String name);
+
     List<ProjectEntity> findByStatus(ProjectStatus status);
     
     boolean existsByName(String name);
